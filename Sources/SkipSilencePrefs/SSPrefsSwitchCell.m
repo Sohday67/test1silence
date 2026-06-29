@@ -2,22 +2,26 @@
 //  SSPrefsSwitchCell.m
 //  SkipSilencePrefs
 //
-//  Custom switch cell so the preferences panel matches the YTLite
-//  visual style (rounded switch tinted with the YouTube red).
+//  Custom switch cell that tints the UISwitch with YouTube's brand
+//  red. PSSwitchTableCell inherits from PSControlTableCell, which
+//  exposes a `control` property of type UIControl. We downcast it
+//  to UISwitch to set the onTintColor.
 //
 
 #import <UIKit/UIKit.h>
-#import <Preferences/PSTableCell.h>
+#import <Preferences/Preferences.h>
 
-@interface SSPrefsSwitchCell : PSTableCell
+@interface SSPrefsSwitchCell : PSSwitchTableCell
 @end
 
 @implementation SSPrefsSwitchCell
 
-- (void)layoutSubviews {
-    [super layoutSubviews];
-    // Match YouTube's red accent color.
-    self.switchControl.onTintColor = [UIColor colorWithRed:0.812 green:0.094 blue:0.094 alpha:1.0];
+- (void)refreshCellContentsWithSpecifier:(PSSpecifier *)specifier {
+    [super refreshCellContentsWithSpecifier:specifier];
+    if ([self.control isKindOfClass:[UISwitch class]]) {
+        [(UISwitch *)self.control setOnTintColor:
+            [UIColor colorWithRed:0.812 green:0.094 blue:0.094 alpha:1.0]];
+    }
 }
 
 @end

@@ -20,15 +20,36 @@ NSString * const kSSPrefTotalSavedSeconds     = @"totalSavedSeconds";
 NSString * const kSSPrefTotalPlayedSeconds    = @"totalPlayedSeconds";
 NSString * const kSSPrefsChangedNotification  = @"SSPrefsChangedNotification";
 
+// Helper: register defaults once at class +load.
+static void ss_register_defaults(void) {
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{
+        NSDictionary *defaults = @{
+            kSSPrefEnabled:                @YES,
+            kSSPrefSmartSpeedEnabled:      @YES,
+            kSSPrefSkipSilences:           @YES,
+            kSSPrefSilenceSkippingSpeed:   @1.5f,
+            kSSPrefUserPlaybackRate:       @1.0f,
+            kSSPrefLoudnessTargetLUFS:     @(-10.0f),
+            kSSPrefMinimumSilenceDuration: @0.20,
+            kSSPrefMusicDetectionBypass:   @NO,
+            kSSPrefVoiceBoostEnabled:      @NO,
+            kSSPrefVoiceBoostTargetLUFS:   @(-16.0f),
+            kSSPrefTotalSavedSeconds:      @0.0,
+            kSSPrefTotalPlayedSeconds:     @0.0,
+        };
+        [[NSUserDefaults standardUserDefaults] registerDefaults:defaults];
+    });
+}
+
 @implementation SSPrefs
 
 + (SSPrefs *)shared {
     static SSPrefs *instance;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
+        ss_register_defaults();
         instance = [[SSPrefs alloc] init];
-        [instance reload];
-        // React to settings app changes via NSUserDefaultsDidChangeNotification.
         [[NSNotificationCenter defaultCenter] addObserver:instance
                                                  selector:@selector(reload)
                                                      name:NSUserDefaultsDidChangeNotification
@@ -38,24 +59,7 @@ NSString * const kSSPrefsChangedNotification  = @"SSPrefsChangedNotification";
 }
 
 - (void)reload {
-    NSUserDefaults *d = [NSUserDefaults standardUserDefaults];
-    // Defaults:
-    NSDictionary *defaults = @{
-        kSSPrefEnabled:               @YES,
-        kSSPrefSmartSpeedEnabled:     @YES,
-        kSSPrefSkipSilences:          @YES,
-        kSSPrefSilenceSkippingSpeed:  @1.5f,
-        kSSPrefUserPlaybackRate:      @1.0f,
-        kSSPrefLoudnessTargetLUFS:    @(-10.0f),
-        kSSPrefMinimumSilenceDuration:@0.20,
-        kSSPrefMusicDetectionBypass:  @NO,
-        kSSPrefVoiceBoostEnabled:     @NO,
-        kSSPrefVoiceBoostTargetLUFS:  @(-16.0f),
-        kSSPrefTotalSavedSeconds:     @0.0,
-        kSSPrefTotalPlayedSeconds:    @0.0,
-    };
-    [d registerDefaults:defaults];
-    // Trigger a re-read of all properties (they read directly from defaults).
+    ss_register_defaults();
     [[NSNotificationCenter defaultCenter]
         postNotificationName:kSSPrefsChangedNotification object:self];
 }
@@ -64,82 +68,99 @@ NSString * const kSSPrefsChangedNotification  = @"SSPrefsChangedNotification";
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
-// Property accessors read directly from NSUserDefaults so changes made in
-// the Settings.app / YTLite panel are reflected immediately.
-#define SS_PROP_GET(type, name, key, default) \
-    - (type)name { \
-        NSUserDefaults *d = [NSUserDefaults standardUserDefaults]; \
-        id v = [d objectForKey:key]; \
-        return v ? [v floatValue] : default; \
-    }
-#define SS_PROP_GET_BOOL(name, key) \
-    - (BOOL)name { \
-        return [[NSUserDefaults standardUserDefaults] boolForKey:key]; \
-    }
-#define SS_PROP_GET_DOUBLE(name, key, default) \
-    - (NSTimeInterval)name { \
-        NSUserDefaults *d = [NSUserDefaults standardUserDefaults]; \
-        id v = [d objectForKey:key]; \
-        return v ? [v doubleValue] : default; \
-    }
-#define SS_PROP_SET(type, name, key) \
-    - (void)setName:(type)v { \
-        NSUserDefaults *d = [NSUserDefaults standardUserDefaults]; \
-        [d setFloat:v forKey:key]; \
-        [self postChange]; \
-    }
-#define SS_PROP_SET_BOOL(name, key) \
-    - (void)setName:(BOOL)v { \
-        NSUserDefaults *d = [NSUserDefaults standardUserDefaults]; \
-        [d setBool:v forKey:key]; \
-        [self postChange]; \
-    }
-#define SS_PROP_SET_DOUBLE(name, key) \
-    - (void)setName:(NSTimeInterval)v { \
-        NSUserDefaults *d = [NSUserDefaults standardUserDefaults]; \
-        [d setDouble:v forKey:key]; \
-        [self postChange]; \
-    }
-
-SS_PROP_GET_BOOL(enabled, kSSPrefEnabled)
-SS_PROP_SET_BOOL(enabled, kSSPrefEnabled)
-
-SS_PROP_GET_BOOL(smartSpeedEnabled, kSSPrefSmartSpeedEnabled)
-SS_PROP_SET_BOOL(smartSpeedEnabled, kSSPrefSmartSpeedEnabled)
-
-SS_PROP_GET_BOOL(skipSilences, kSSPrefSkipSilences)
-SS_PROP_SET_BOOL(skipSilences, kSSPrefSkipSilences)
-
-SS_PROP_GET(float, silenceSkippingSpeed, kSSPrefSilenceSkippingSpeed, 1.5f)
-SS_PROP_SET(float, silenceSkippingSpeed, kSSPrefSilenceSkippingSpeed)
-
-SS_PROP_GET(float, userPlaybackRate, kSSPrefUserPlaybackRate, 1.0f)
-SS_PROP_SET(float, userPlaybackRate, kSSPrefUserPlaybackRate)
-
-SS_PROP_GET(float, loudnessTargetLUFS, kSSPrefLoudnessTargetLUFS, -10.0f)
-SS_PROP_SET(float, loudnessTargetLUFS, kSSPrefLoudnessTargetLUFS)
-
-SS_PROP_GET_DOUBLE(minimumSilenceDuration, kSSPrefMinimumSilenceDuration, 0.20)
-SS_PROP_SET_DOUBLE(minimumSilenceDuration, kSSPrefMinimumSilenceDuration)
-
-SS_PROP_GET_BOOL(musicDetectionBypass, kSSPrefMusicDetectionBypass)
-SS_PROP_SET_BOOL(musicDetectionBypass, kSSPrefMusicDetectionBypass)
-
-SS_PROP_GET_BOOL(voiceBoostEnabled, kSSPrefVoiceBoostEnabled)
-SS_PROP_SET_BOOL(voiceBoostEnabled, kSSPrefVoiceBoostEnabled)
-
-SS_PROP_GET(float, voiceBoostTargetLUFS, kSSPrefVoiceBoostTargetLUFS, -16.0f)
-SS_PROP_SET(float, voiceBoostTargetLUFS, kSSPrefVoiceBoostTargetLUFS)
-
-SS_PROP_GET_DOUBLE(totalSavedSeconds, kSSPrefTotalSavedSeconds, 0.0)
-SS_PROP_SET_DOUBLE(totalSavedSeconds, kSSPrefTotalSavedSeconds)
-
-SS_PROP_GET_DOUBLE(totalPlayedSeconds, kSSPrefTotalPlayedSeconds, 0.0)
-SS_PROP_SET_DOUBLE(totalPlayedSeconds, kSSPrefTotalPlayedSeconds)
-
 - (void)postChange {
     [[NSNotificationCenter defaultCenter]
         postNotificationName:kSSPrefsChangedNotification object:self];
+}
+
+// --- BOOL accessors ---------------------------------------------------------
+
+- (BOOL)enabled { return [[NSUserDefaults standardUserDefaults] boolForKey:kSSPrefEnabled]; }
+- (void)setEnabled:(BOOL)v {
+    [[NSUserDefaults standardUserDefaults] setBool:v forKey:kSSPrefEnabled];
+    [self postChange];
+}
+
+- (BOOL)smartSpeedEnabled { return [[NSUserDefaults standardUserDefaults] boolForKey:kSSPrefSmartSpeedEnabled]; }
+- (void)setSmartSpeedEnabled:(BOOL)v {
+    [[NSUserDefaults standardUserDefaults] setBool:v forKey:kSSPrefSmartSpeedEnabled];
+    [self postChange];
+}
+
+- (BOOL)skipSilences { return [[NSUserDefaults standardUserDefaults] boolForKey:kSSPrefSkipSilences]; }
+- (void)setSkipSilences:(BOOL)v {
+    [[NSUserDefaults standardUserDefaults] setBool:v forKey:kSSPrefSkipSilences];
+    [self postChange];
+}
+
+- (BOOL)musicDetectionBypass { return [[NSUserDefaults standardUserDefaults] boolForKey:kSSPrefMusicDetectionBypass]; }
+- (void)setMusicDetectionBypass:(BOOL)v {
+    [[NSUserDefaults standardUserDefaults] setBool:v forKey:kSSPrefMusicDetectionBypass];
+    [self postChange];
+}
+
+- (BOOL)voiceBoostEnabled { return [[NSUserDefaults standardUserDefaults] boolForKey:kSSPrefVoiceBoostEnabled]; }
+- (void)setVoiceBoostEnabled:(BOOL)v {
+    [[NSUserDefaults standardUserDefaults] setBool:v forKey:kSSPrefVoiceBoostEnabled];
+    [self postChange];
+}
+
+// --- Float accessors --------------------------------------------------------
+
+- (float)silenceSkippingSpeed {
+    return [[NSUserDefaults standardUserDefaults] floatForKey:kSSPrefSilenceSkippingSpeed];
+}
+- (void)setSilenceSkippingSpeed:(float)v {
+    [[NSUserDefaults standardUserDefaults] setFloat:v forKey:kSSPrefSilenceSkippingSpeed];
+    [self postChange];
+}
+
+- (float)userPlaybackRate {
+    return [[NSUserDefaults standardUserDefaults] floatForKey:kSSPrefUserPlaybackRate];
+}
+- (void)setUserPlaybackRate:(float)v {
+    [[NSUserDefaults standardUserDefaults] setFloat:v forKey:kSSPrefUserPlaybackRate];
+    [self postChange];
+}
+
+- (float)loudnessTargetLUFS {
+    return [[NSUserDefaults standardUserDefaults] floatForKey:kSSPrefLoudnessTargetLUFS];
+}
+- (void)setLoudnessTargetLUFS:(float)v {
+    [[NSUserDefaults standardUserDefaults] setFloat:v forKey:kSSPrefLoudnessTargetLUFS];
+    [self postChange];
+}
+
+- (float)voiceBoostTargetLUFS {
+    return [[NSUserDefaults standardUserDefaults] floatForKey:kSSPrefVoiceBoostTargetLUFS];
+}
+- (void)setVoiceBoostTargetLUFS:(float)v {
+    [[NSUserDefaults standardUserDefaults] setFloat:v forKey:kSSPrefVoiceBoostTargetLUFS];
+    [self postChange];
+}
+
+// --- NSTimeInterval accessors ----------------------------------------------
+
+- (NSTimeInterval)minimumSilenceDuration {
+    return [[NSUserDefaults standardUserDefaults] doubleForKey:kSSPrefMinimumSilenceDuration];
+}
+- (void)setMinimumSilenceDuration:(NSTimeInterval)v {
+    [[NSUserDefaults standardUserDefaults] setDouble:v forKey:kSSPrefMinimumSilenceDuration];
+    [self postChange];
+}
+
+- (NSTimeInterval)totalSavedSeconds {
+    return [[NSUserDefaults standardUserDefaults] doubleForKey:kSSPrefTotalSavedSeconds];
+}
+- (void)setTotalSavedSeconds:(NSTimeInterval)v {
+    [[NSUserDefaults standardUserDefaults] setDouble:v forKey:kSSPrefTotalSavedSeconds];
+}
+
+- (NSTimeInterval)totalPlayedSeconds {
+    return [[NSUserDefaults standardUserDefaults] doubleForKey:kSSPrefTotalPlayedSeconds];
+}
+- (void)setTotalPlayedSeconds:(NSTimeInterval)v {
+    [[NSUserDefaults standardUserDefaults] setDouble:v forKey:kSSPrefTotalPlayedSeconds];
 }
 
 @end

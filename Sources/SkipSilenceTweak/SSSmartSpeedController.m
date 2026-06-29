@@ -113,13 +113,11 @@
             _silenceStartedAt = now;
         }
         if (duration >= _minimumSilenceDurationToSkip) {
-            // Bump rate during silence. Use setRate:withTime: if possible
-            // so the change is sample-accurate.
-            @try {
-                [_player setRate:_silenceSkippingSpeed
-                          withTime:[_player currentTime]
-                        atHostTime:0];
-            } @catch (id _) {
+            // Bump rate during silence. The sample-accurate variant
+            // -[AVPlayer setRate:time:atHostTime:] is private; we use the
+            // public `rate` property setter, which is good enough for
+            // ~50 ms granularity.
+            if (_player.rate != _silenceSkippingSpeed) {
                 _player.rate = _silenceSkippingSpeed;
             }
         }
@@ -136,11 +134,7 @@
             _silenceStartedAt = 0;
         }
         // Restore user's preferred rate.
-        @try {
-            [_player setRate:_userRate
-                      withTime:[_player currentTime]
-                    atHostTime:0];
-        } @catch (id _) {
+        if (_player.rate != _userRate) {
             _player.rate = _userRate;
         }
     }

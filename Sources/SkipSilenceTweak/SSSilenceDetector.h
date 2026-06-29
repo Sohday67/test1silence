@@ -59,9 +59,9 @@ typedef NS_ENUM(NSInteger, SSSilenceDecision) {
 @property (nonatomic, readonly) BOOL isCurrentlySilent;
 
 - (instancetype)initWithSampleRate:(double)sr channels:(NSUInteger)ch;
-- (void)processInterleavedSamples:(const float *)samples
+- (void)processInterleavedSamples:(const float * _Nonnull)samples
                             frames:(NSUInteger)frameCount;
-- (void)processPlanarSamples:(const float *const *)channels
+- (void)processPlanarSamples:(const float * _Nullable const * _Nullable)channels
                      channels:(NSUInteger)channelCount
                         frames:(NSUInteger)frameCount;
 - (SSSilenceDecision)currentDecision;

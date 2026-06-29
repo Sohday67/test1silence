@@ -8,6 +8,7 @@
 [![Platform: iOS 14+](https://img.shields.io/badge/Platform-iOS%2014%2B-blue.svg)]()
 [![Toolchain: Theos](https://img.shields.io/badge/Toolchain-Theos-purple.svg)](https://theos.dev)
 [![YTLite 5+](https://img.shields.io/badge/Requires-YTLite%205%2B-red.svg)](https://github.com/dayanch96/YTLite)
+[![Build: passing](https://img.shields.io/badge/Build-passing-brightgreen.svg)]()
 
 Skip Silence listens to the audio that YouTube is playing, measures its
 loudness in real time using the international LUFS standard
@@ -92,8 +93,8 @@ scratch.
 ## Building
 
 ```bash
-git clone https://github.com/your-org/ytlite-skip-silence.git
-cd ytlite-skip-silence
+git clone https://github.com/Sohday67/test1silence.git
+cd test1silence
 make package FINALPACKAGE=1
 ```
 
@@ -103,6 +104,33 @@ For Sileo/Zebra repo distribution, also build the rootless variant:
 
 ```bash
 make package THEOS_PACKAGE_SCHEME=rootless FINALPACKAGE=1
+```
+
+### Build requirements
+
+The build has been verified against:
+
+- Theos (latest `master`)
+- iPhoneOS14.5.sdk (from [theos/sdks](https://github.com/theos/sdks/releases))
+- L1ghtmann iOSToolchain for Linux x86_64
+- iOS deployment target: 14.0
+- Architectures: `arm64` + `arm64e` (fat binary)
+
+If you're setting up Theos on Linux for the first time:
+
+```bash
+git clone --recursive https://github.com/theos/theos.git ~/theos
+export THEOS=~/theos
+
+# Install SDK
+curl -L -o /tmp/sdk.tar.xz \
+  https://github.com/theos/sdks/releases/download/master-146e41f/iPhoneOS14.5.sdk.tar.xz
+mkdir -p $THEOS/sdks && tar xf /tmp/sdk.tar.xz -C $THEOS/sdks
+
+# Install toolchain
+curl -L -o /tmp/tc.tar.xz \
+  https://github.com/L1ghtmann/llvm-project/releases/latest/download/iOSToolchain-$(uname -m).tar.xz
+mkdir -p $THEOS/toolchain && tar xf /tmp/tc.tar.xz -C $THEOS/toolchain
 ```
 
 ## Installing

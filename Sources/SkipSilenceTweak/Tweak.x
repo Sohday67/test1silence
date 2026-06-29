@@ -10,16 +10,26 @@
 //  Hooks:
 //    - [YTPlayerViewController player]     -> attach our controller
 //    - [AVPlayer play]                     -> arm controller if needed
-//    - [YTMainAppVideoPlayerView player]   -> alternative entry point
 //
 
 #import <AVFoundation/AVFoundation.h>
+#import <UIKit/UIKit.h>
 #import <objc/runtime.h>
 
 #import "SSPrefs.h"
 #import "SSSmartSpeedController.h"
 #import "SSAudioTap.h"
 #import "SSLogger.h"
+
+// Forward declaration of the YouTube private class so Logos can hook it
+// without a full header. The class exists in the YouTube binary at
+// runtime; this declaration only satisfies the compiler.
+@interface YTPlayerViewController : UIViewController
+- (AVPlayer *)player;
+@end
+
+@interface AVPlayer (SkipSilence)
+@end
 
 static char kSSControllerKey;  // objc_setAssociatedObject key
 
@@ -88,14 +98,13 @@ static void ss_attachController(AVPlayer *player) {
 
 // --- YTPlayerViewController hook (backup entry point) -----------------------
 // If AVPlayer -play is not called for some pre-roll path, this catches the
-// YT player view's main player instance. Class names match YTLite 5.x and
-// YouTube 19.x.
+// YT player view's main player instance.
 
 %hook YTPlayerViewController
-- (id)player {
-    id orig = %orig;
+- (AVPlayer *)player {
+    AVPlayer *orig = %orig;
     if ([orig isKindOfClass:[AVPlayer class]]) {
-        ss_attachController((AVPlayer *)orig);
+        ss_attachController(orig);
     }
     return orig;
 }

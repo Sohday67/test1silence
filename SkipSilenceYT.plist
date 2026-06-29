@@ -4,8 +4,5 @@
             "com.google.ios.youtube",
             "com.google.ios.youtubemusic",
         );
-        Mode = "Any";
     };
-    ArchiveSupplier = "SkipSilenceYT.dylib";
-    SupplierInfo = "SkipSilenceYT";
 }

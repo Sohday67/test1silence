@@ -69,11 +69,11 @@ static CFStringRef ss_tap_context_key = CFSTR("com.ytlite.skipsilence.tapctx");
     MTAudioProcessingTapCallbacks callbacks = {
         .version = kMTAudioProcessingTapCallbacksVersion_0,
         .clientInfo = (__bridge void *)self,
-        .tapInit         = NULL,
-        .tapFinalize     = NULL,
-        .tapPrepare      = NULL,  // we read the format lazily in process
-        .tapProcess      = ss_tap_process_cb,
-        .tapUnprepare    = NULL,
+        .init         = NULL,
+        .finalize     = NULL,
+        .prepare      = NULL,  // we read the format lazily in process
+        .process      = ss_tap_process_cb,
+        .unprepare    = NULL,
     };
 
     OSStatus status = MTAudioProcessingTapCreate(kCFAllocatorDefault,
@@ -118,7 +118,7 @@ static CFStringRef ss_tap_context_key = CFSTR("com.ytlite.skipsilence.tapctx");
     }
     _originalMix = nil;
     if (_tap) {
-        MTAudioProcessingTapRelease(_tap);
+        CFRelease(_tap);
         _tap = NULL;
     }
     _isInstalled = NO;
