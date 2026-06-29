@@ -1,0 +1,13 @@
+Package: com.ytlite.skipsilence
+Name: SkipSilenceYT
+Version: 1.0.0
+Architecture: iphoneos-arm
+Description: YTLite extension that adds Overcast-style Smart Speed / skip-silence to the YouTube app.
+Maintainer: YTLite Skip-Silence Contributors
+Author: YTLite Skip-Silence Contributors
+Section: Tweaks
+Depends: mobilesubstrate, firmware (>= 14.0), com.ytlite (>= 5.0) | com.ps.ytlite (>= 5.0)
+Conflicts: com.michael.ytspeedsilence
+Recommends: com.ytlite.ytliteprefs
+Homepage: https://github.com/your-org/ytlite-skip-silence
+Tag: purpose::extension, works-with::ytlite

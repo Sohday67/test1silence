@@ -1,0 +1,47 @@
+MIT License
+
+Copyright (c) 2026 ytlite-skip-silence contributors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---
+
+This project ("ytlite-skip-silence") implements an algorithm for
+detecting silent sections in audio playback by measuring loudness
+according to ITU-R BS.1770-4 ("Algorithms to measure audio programme
+loudness and true-peak audio level"), an open international standard
+published by the International Telecommunication Union.
+
+The algorithm was studied by reverse-engineering the Overcast podcast
+app (© Marco Arment / Overcast Radio LLC) for the sole purpose of
+interoperability — i.e. providing a similar user experience for users
+of the YTLite YouTube tweak. No source code, compiled binary code,
+resources, assets, strings, or artwork from Overcast are included in
+this repository. Only the algorithm (an open international standard)
+and the public struct field layout (recovered from the binary's
+@encode metadata, which is not subject to copyright) were used.
+
+"Smart Speed" and "Voice Boost" are product feature names associated
+with Overcast. This project is not affiliated with, endorsed by, or
+sponsored by Overcast, Marco Arment, or Overcast Radio LLC. All
+trademarks belong to their respective owners.
+
+YouTube is a trademark of Google LLC. This project is not affiliated
+with or endorsed by Google LLC. Use of YouTube is governed by Google's
+Terms of Service.

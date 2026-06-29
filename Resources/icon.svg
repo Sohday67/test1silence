@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FF4D4D"/>
+      <stop offset="1" stop-color="#CF1818"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="14" fill="url(#g)"/>
+  <g fill="#FFFFFF">
+    <!-- Speaker icon -->
+    <path d="M14 26h6l8-6v20l-8-6h-6z"/>
+    <!-- Sound waves -->
+    <path d="M30 22c4 2 4 14 0 16" stroke="#FFFFFF" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    <path d="M34 18c8 4 8 20 0 24" stroke="#FFFFFF" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    <!-- Skip arrow -->
+    <path d="M44 24 L52 32 L44 40 Z"/>
+    <rect x="40" y="24" width="3" height="16" rx="1"/>
+  </g>
+</svg>

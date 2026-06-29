@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>items</key>
+    <array>
+
+        <!-- Header / credit -->
+        <dict>
+            <key>cell</key>
+            <string>PSGroupCell</string>
+            <key>label</key>
+            <string>Skip Silence — Smart Speed for YouTube</string>
+            <key>footerText</key>
+            <string>Skip Silence listens to the audio playing in YouTube and speeds through silent sections automatically — the same Smart Speed feature Overcast made famous, ported to YTLite.
+
+Algorithm: ITU-R BS.1770-4 LUFS measurement, 2-pass loudness tracking, dynamic rate adjustment. No code or assets from Overcast are included; only the algorithm (an open international standard) was reverse-engineered for interoperability.</string>
+        </dict>
+
+        <!-- Master enable -->
+        <dict>
+            <key>cell</key>
+            <string>PSSwitchCell</string>
+            <key>cellClass</key>
+            <string>SSPrefsSwitchCell</string>
+            <key>label</key>
+            <string>Enabled</string>
+            <key>key</key>
+            <string>enabled</string>
+            <key>default</key>
+            <true/>
+            <key>defaults</key>
+            <string>com.ytlite.skipsilence</string>
+            <key>PostNotification</key>
+            <string>com.ytlite.skipsilence.prefschanged</string>
+        </dict>
+
+        <!-- Smart Speed -->
+        <dict>
+            <key>cell</key>
+            <string>PSGroupCell</string>
+            <key>label</key>
+            <string>Smart Speed</string>
+            <key>footerText</key>
+            <string>Speeds through silent sections without changing pitch. Inspired by Overcast.</string>
+        </dict>
+        <dict>
+            <key>cell</key>
+            <string>PSSwitchCell</string>
+            <key>cellClass</key>
+            <string>SSPrefsSwitchCell</string>
+            <key>label</key>
+            <string>Smart Speed</string>
+            <key>key</key>
+            <string>smartSpeedEnabled</string>
+            <key>default</key>
+            <true/>
+            <key>defaults</key>
+            <string>com.ytlite.skipsilence</string>
+            <key>PostNotification</key>
+            <string>com.ytlite.skipsilence.prefschanged</string>
+        </dict>
+        <dict>
+            <key>cell</key>
+            <string>PSSwitchCell</string>
+            <key>cellClass</key>
+            <string>SSPrefsSwitchCell</string>
+            <key>label</key>
+            <string>Skip Silences</string>
+            <key>key</key>
+            <string>skipSilences</string>
+            <key>default</key>
+            <true/>
+            <key>defaults</key>
+            <string>com.ytlite.skipsilence</string>
+            <key>PostNotification</key>
+            <string>com.ytlite.skipsilence.prefschanged</string>
+        </dict>
+        <dict>
+            <key>cell</key>
+            <string>PSSliderCell</string>
+            <key>label</key>
+            <string>Skip Speed</string>
+            <key>key</key>
+            <string>silenceSkippingSpeed</string>
+            <key>default</key>
+            <real>1.5</real>
+            <key>min</key>
+            <real>1.1</real>
+            <key>max</key>
+            <real>3.0</real>
+            <key>showValue</key>
+            <true/>
+            <key>defaults</key>
+            <string>com.ytlite.skipsilence</string>
+            <key>PostNotification</key>
+            <string>com.ytlite.skipsilence.prefschanged</string>
+        </dict>
+        <dict>
+            <key>cell</key>
+            <string>PSSliderCell</string>
+            <key>label</key>
+            <string>Silence Threshold (LU below avg)</string>
+            <key>key</key>
+            <string>loudnessTargetLUFS</string>
+            <key>default</key>
+            <real>-10.0</real>
+            <key>min</key>
+            <real>-30.0</real>
+            <key>max</key>
+            <real>-3.0</real>
+            <key>showValue</key>
+            <true/>
+            <key>defaults</key>
+            <string>com.ytlite.skipsilence</string>
+            <key>PostNotification</key>
+            <string>com.ytlite.skipsilence.prefschanged</string>
+        </dict>
+        <dict>
+            <key>cell</key>
+            <string>PSSliderCell</string>
+            <key>label</key>
+            <string>Minimum Silence Duration (s)</string>
+            <key>key</key>
+            <string>minimumSilenceDuration</string>
+            <key>default</key>
+            <real>0.20</real>
+            <key>min</key>
+            <real>0.05</real>
+            <key>max</key>
+            <real>1.0</real>
+            <key>showValue</key>
+            <true/>
+            <key>defaults</key>
+            <string>com.ytlite.skipsilence</string>
+            <key>PostNotification</key>
+            <string>com.ytlite.skipsilence.prefschanged</string>
+        </dict>
+        <dict>
+            <key>cell</key>
+            <string>PSSwitchCell</string>
+            <key>cellClass</key>
+            <string>SSPrefsSwitchCell</string>
+            <key>label</key>
+            <string>Music Detection Bypass</string>
+            <key>key</key>
+            <string>musicDetectionBypass</string>
+            <key>default</key>
+            <false/>
+            <key>defaults</key>
+            <string>com.ytlite.skipsilence</string>
+            <key>PostNotification</key>
+            <string>com.ytlite.skipsilence.prefschanged</string>
+        </dict>
+
+        <!-- Voice Boost -->
+        <dict>
+            <key>cell</key>
+            <string>PSGroupCell</string>
+            <key>label</key>
+            <string>Voice Boost</string>
+            <key>footerText</key>
+            <string>Compresses and equalizes the audio so speech is louder and clearer. Targets the configured LUFS loudness.</string>
+        </dict>
+        <dict>
+            <key>cell</key>
+            <string>PSSwitchCell</string>
+            <key>cellClass</key>
+            <string>SSPrefsSwitchCell</string>
+            <key>label</key>
+            <string>Voice Boost</string>
+            <key>key</key>
+            <string>voiceBoostEnabled</string>
+            <key>default</key>
+            <false/>
+            <key>defaults</key>
+            <string>com.ytlite.skipsilence</string>
+            <key>PostNotification</key>
+            <string>com.ytlite.skipsilence.prefschanged</string>
+        </dict>
+        <dict>
+            <key>cell</key>
+            <string>PSSliderCell</string>
+            <key>label</key>
+            <string>Target LUFS</string>
+            <key>key</key>
+            <string>voiceBoostTargetLUFS</string>
+            <key>default</key>
+            <real>-16.0</real>
+            <key>min</key>
+            <real>-30.0</real>
+            <key>max</key>
+            <real>-10.0</real>
+            <key>showValue</key>
+            <true/>
+            <key>defaults</key>
+            <string>com.ytlite.skipsilence</string>
+            <key>PostNotification</key>
+            <string>com.ytlite.skipsilence.prefschanged</string>
+        </dict>
+
+        <!-- Stats -->
+        <dict>
+            <key>cell</key>
+            <string>PSGroupCell</string>
+            <key>label</key>
+            <string>Lifetime Stats</string>
+            <key>footerText</key>
+            <string>Smart Speed saved X of Y seconds (Z%). Mirrors Overcast's reporting.</string>
+        </dict>
+        <dict>
+            <key>cell</key>
+            <string>PSStaticTextCell</string>
+            <key>label</key>
+            <string>Time Saved (s)</string>
+            <key>defaults</key>
+            <string>com.ytlite.skipsilence</string>
+            <key>key</key>
+            <string>totalSavedSeconds</string>
+        </dict>
+        <dict>
+            <key>cell</key>
+            <string>PSStaticTextCell</string>
+            <key>label</key>
+            <string>Total Played (s)</string>
+            <key>defaults</key>
+            <string>com.ytlite.skipsilence</string>
+            <key>key</key>
+            <string>totalPlayedSeconds</string>
+        </dict>
+
+        <!-- Credits -->
+        <dict>
+            <key>cell</key>
+            <string>PSGroupCell</string>
+            <key>label</key>
+            <string>Credits</string>
+            <key>footerText</key>
+            <string>Smart Speed / Skip Silence algorithm ported from Overcast (© Marco Arment). LUFS measurement per ITU-R BS.1770-4. This extension is not affiliated with Overcast or YouTube.</string>
+        </dict>
+
+    </array>
+    <key>title</key>
+    <string>Skip Silence</string>
+</dict>
+</plist>
