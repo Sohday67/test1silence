@@ -14,21 +14,35 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install Theos
+      - name: Install Theos dependencies
         run: |
           brew install ldid xz make
-          mkdir -p ~/theos
+          echo "$(brew --prefix)/opt/make/libexec/gnubin" >> $GITHUB_PATH
+
+      - name: Install Theos
+        run: |
           git clone --recursive https://github.com/theos/theos.git ~/theos
           echo "THEOS=$HOME/theos" >> $GITHUB_ENV
 
+      - name: Install iPhone SDK
+        run: |
+          curl -L -o /tmp/sdk.tar.xz \
+            "https://github.com/theos/sdks/releases/download/master-146e41f/iPhoneOS14.5.sdk.tar.xz"
+          mkdir -p $THEOS/sdks
+          tar xf /tmp/sdk.tar.xz -C $THEOS/sdks
+
       - name: Select Xcode
-        run: sudo xcode-select -s /Applications/Xcode_*.app
+        run: |
+          sudo xcode-select -s "$(ls -d /Applications/Xcode*.app | head -1)"
+          xcodebuild -version
 
       - name: Build (rootful)
-        run: make package FINALPACKAGE=1 THEOS_PACKAGE_SCHEME=roothide
+        run: make package FINALPACKAGE=1
 
       - name: Build (rootless)
-        run: make package FINALPACKAGE=1 THEOS_PACKAGE_SCHEME=rootless
+        run: |
+          make clean
+          make package FINALPACKAGE=1 THEOS_PACKAGE_SCHEME=rootless
 
       - name: Upload debs
         uses: actions/upload-artifact@v4

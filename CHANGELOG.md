@@ -12,6 +12,39 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Real `OCAudioClassifier`-style music detector
 - Localizations (es, fr, de, ja, zh-Hans)
 
+## [1.0.2] — 2026-06-29
+
+### Fixed
+- **CI: `roothide` package scheme does not exist** — the GitHub Actions
+  workflow was building with `THEOS_PACKAGE_SCHEME=roothide`, but
+  Theos only ships a `rootless` module (no `roothide`). Changed the
+  rootless build step to use `THEOS_PACKAGE_SCHEME=rootless`, which
+  produces a correct `iphoneos-arm64.deb` with all files prefixed
+  by `/var/jb/`.
+- **CI: `sudo xcode-select -s /Applications/Xcode_*.app`** — the
+  glob doesn't expand under `sudo` and may not match the actual
+  Xcode version on the runner. Replaced with
+  `sudo xcode-select -s "$(ls -d /Applications/Xcode*.app | head -1)"`
+  so it picks whatever Xcode is installed.
+- **CI: missing iPhone SDK** — the workflow cloned Theos but never
+  installed an SDK, so the build couldn't find any headers. Added
+  an explicit `Install iPhone SDK` step that downloads
+  `iPhoneOS14.5.sdk` from theos/sdks.
+- **CI: GNU make not on PATH** — `brew install make` installs GNU
+  make as `gmake`, not `make`, and macOS ships BSD make as `make`.
+  Theos needs GNU make. Added the brew GNU make libexec gnubin dir
+  to `$GITHUB_PATH` so `make` resolves to GNU make.
+- **CI: rootless build didn't `make clean` first** — switching
+  between rootful and rootless without cleaning leaves stale
+  objects. Added `make clean` before the rootless build.
+
+### Verified
+- Both rootful (`iphoneos-arm.deb`, 23 KB) and rootless
+  (`iphoneos-arm64.deb`, 23 KB) build cleanly with no errors on
+  Linux + Theos + iPhoneOS14.5 SDK + L1ghtmann iOSToolchain.
+- Rootless deb correctly prefixes all install paths with `/var/jb/`.
+- Rootful deb installs to the standard `/Library/...` paths.
+
 ## [1.0.1] — 2026-06-29
 
 ### Fixed
